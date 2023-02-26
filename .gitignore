@@ -1,6 +1,11 @@
 Debug/
 Release/
+thirdparty/
+low res/
+x64/
+
+.vs/
+
 *.vcxproj*
 *.sln
-.vs/
-thirdparty/
+*.aps
