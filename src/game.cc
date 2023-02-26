@@ -15,8 +15,10 @@ Game::Game() {
     background = initObject(GameObject::Type::BACKGROUND, "graphics/background.png");
     tree       = initObject(GameObject::Type::TREE, "graphics/tree.png", 810, 0);
     bee        = initObject(GameObject::Type::BEE, "graphics/bee.png");
-    cloud      = initObject(GameObject::Type::CLOUD, "graphics/cloud.png");
-    cloud2     = initObject(GameObject::Type::CLOUD, "graphics/cloud.png");
+
+    for (auto &cloud : clouds) {
+        cloud = initObject(GameObject::Type::CLOUD, "graphics/cloud.png");
+    }
 }
 
 void Game::run() {
@@ -38,14 +40,18 @@ void Game::handleInput() {
 
 void Game::update() {
     bee->update(fps, resolution.x);
-    cloud->update(fps, resolution.x);
+    for (auto &cloud : clouds) {
+        cloud->update(fps, resolution.x);
+    }
 }
 
 void Game::draw() {
     window.clear();
 
     window.draw(background->getSprite());
-    window.draw(cloud->getSprite());
+    for (auto &cloud : clouds) {
+        window.draw(cloud->getSprite());
+    }
     window.draw(tree->getSprite());
     window.draw(bee->getSprite());
 

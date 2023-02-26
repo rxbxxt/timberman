@@ -59,13 +59,11 @@ void GameObject::__moveUntilX(GameObject::Direction direction,
 }
 
 int GameObject::__calculateSpeed(int rand_top, int rand_bot) noexcept {
-    srand((int)time(0));
-    return (rand() % (rand_top - rand_bot)) + rand_bot;
+    return ___randomNumber(rand_bot, rand_top);
 }
 
 int GameObject::__calculateY(int rand_top, int rand_bot) noexcept {
-    srand((int)time(0) * 10);
-    return (rand() % (rand_top - rand_bot)) + rand_bot;
+    return ___randomNumber(rand_bot, rand_top);
 }
 
 void GameObject::__initUpdateVariables() {
@@ -87,4 +85,17 @@ void GameObject::__initUpdateVariablesHelper(int xs, int yrt, int yrb,
     __y_rand_bot     = yrb;
     __speed_rand_top = srt;
     __speed_rand_bot = srb;
+}
+
+int GameObject::___randomNumber(int min, int max) {
+    typedef std::mt19937 range_t;
+    std::uniform_int_distribution<range_t::result_type> udist(min, max);
+    range_t range;
+
+    range_t::result_type seed = (int)this;
+    range.seed(seed);
+
+    range_t::result_type result = udist(range);
+
+    return result;
 }

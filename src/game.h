@@ -20,9 +20,9 @@ private:
     std::unique_ptr <GameObject> background;
     std::unique_ptr <GameObject> tree;
     std::unique_ptr <GameObject> bee;
-    std::unique_ptr <GameObject> cloud;
-    std::unique_ptr <GameObject> cloud2;
 
+    std::vector <std::unique_ptr <GameObject>> clouds
+        = std::vector <std::unique_ptr <GameObject>>(3);
 
     auto initObject(GameObject::Type type,
                     const std::string &texture_file,

@@ -2,8 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <string>
-#include <cstdlib>
-#include <ctime>
+#include <random>
 
 class GameObject {
 public:
@@ -59,4 +58,6 @@ private:
 
     int __calculateSpeed(int rand_top, int rand_bot) noexcept;
     int __calculateY(int rand_top, int rand_bot) noexcept;
+
+    int ___randomNumber(int min, int max);
 };
