@@ -34,6 +34,7 @@ void GameObject::__update(GameObject::Direction direction,
     if (!is_active) {
         x = __x_start;
         y = __calculateY(__y_rand_top, __y_rand_bot);
+
         speed = __calculateSpeed(__speed_rand_top, __speed_rand_bot);
 
         sprite.setPosition(x, y);
@@ -71,7 +72,7 @@ void GameObject::__initUpdateVariables() {
         __initUpdateVariablesHelper(2000, 1000, 500, 400, 200);
     }
     else if (type == GameObject::Type::CLOUD) {
-        __initUpdateVariablesHelper(-400, 250, 125, 125, 50);
+        __initUpdateVariablesHelper(-400, 300, 50, 100, 50);
     }
     else {
         __initUpdateVariablesHelper(0, 0, 0, 0, 0);
