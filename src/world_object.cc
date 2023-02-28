@@ -1,6 +1,6 @@
-#include "game_object.h"
+#include "world_object.h"
 
-GameObject::GameObject(GameObject::Type type,
+WorldObject::WorldObject(WorldObject::Type type,
                        const std::string &texture_file, 
                        float sprite_x, 
                        float sprite_y,
@@ -20,20 +20,20 @@ GameObject::GameObject(GameObject::Type type,
     sprite.setPosition(x, y);
 }
 
-void GameObject::draw(sf::RenderWindow &window) {
+void WorldObject::draw(sf::RenderWindow &window) {
     window.draw(sprite);
 }
 
-void GameObject::update(float fps, int window_width) {
-    if (type == GameObject::Type::BEE) {
-        __update(GameObject::Direction::LEFT, fps, window_width);
+void WorldObject::update(float fps, int window_width) {
+    if (type == WorldObject::Type::BEE) {
+        __update(WorldObject::Direction::LEFT, fps, window_width);
     }
-    else if (type == GameObject::Type::CLOUD) {
-        __update(GameObject::Direction::RIGHT, fps, window_width);
+    else if (type == WorldObject::Type::CLOUD) {
+        __update(WorldObject::Direction::RIGHT, fps, window_width);
     } 
 }
 
-void GameObject::__update(GameObject::Direction direction,
+void WorldObject::__update(WorldObject::Direction direction,
                           float fps, int window_width) {
     if (!is_active) {
         x = __x_start;
@@ -49,33 +49,33 @@ void GameObject::__update(GameObject::Direction direction,
     }
 }
 
-void GameObject::__moveUntilX(GameObject::Direction direction, 
+void WorldObject::__moveUntilX(WorldObject::Direction direction, 
                               float fps, int window_width) {
-    x = (direction == GameObject::Direction::LEFT)
+    x = (direction == WorldObject::Direction::LEFT)
         ? (x - speed * fps) 
         : (x + speed * fps);
 
     sprite.setPosition(x, y);
 
-    if (((direction == GameObject::Direction::LEFT) && (x < -texture_x)) ||
-        ((direction == GameObject::Direction::RIGHT) && (x > window_width))) {
+    if (((direction == WorldObject::Direction::LEFT) && (x < -texture_x)) ||
+        ((direction == WorldObject::Direction::RIGHT) && (x > window_width))) {
         is_active = false;
     }
 }
 
-int GameObject::__calculateSpeed(int rand_top, int rand_bot) noexcept {
-    return ___randomNumber(rand_bot, rand_top);
+int WorldObject::__calculateSpeed(int rand_top, int rand_bot) noexcept {
+    return Random::randomNumber(rand_bot, rand_top, (int)this);
 }
 
-int GameObject::__calculateY(int rand_top, int rand_bot) noexcept {
-    return ___randomNumber(rand_bot, rand_top);
+int WorldObject::__calculateY(int rand_top, int rand_bot) noexcept {
+    return Random::randomNumber(rand_bot, rand_top, (int)this);
 }
 
-void GameObject::__initUpdateVariables() {
-    if (type == GameObject::Type::BEE) {
+void WorldObject::__initUpdateVariables() {
+    if (type == WorldObject::Type::BEE) {
         __initUpdateVariablesHelper(2000, 1000, 500, 400, 200);
     }
-    else if (type == GameObject::Type::CLOUD) {
+    else if (type == WorldObject::Type::CLOUD) {
         __initUpdateVariablesHelper(-400, 300, 50, 100, 50);
     }
     else {
@@ -83,24 +83,11 @@ void GameObject::__initUpdateVariables() {
     }
 }
 
-void GameObject::__initUpdateVariablesHelper(int xs, int yrt, int yrb, 
+void WorldObject::__initUpdateVariablesHelper(int xs, int yrt, int yrb, 
                                              int srt, int srb) {
     __x_start        = xs;
     __y_rand_top     = yrt;
     __y_rand_bot     = yrb;
     __speed_rand_top = srt;
     __speed_rand_bot = srb;
-}
-
-int GameObject::___randomNumber(int min, int max) {
-    typedef std::mt19937 range_t;
-    std::uniform_int_distribution<range_t::result_type> udist(min, max);
-    range_t range;
-
-    range_t::result_type seed = (int)this;
-    range.seed(seed);
-
-    range_t::result_type result = udist(range);
-
-    return result;
 }

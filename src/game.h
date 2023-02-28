@@ -4,7 +4,8 @@
 #include <memory>
 #include <array>
 
-#include "game_object.h"
+#include "world_object.h"
+#include "tree_branch.h"
 #include "hud.h"
 
 class Game {
@@ -20,26 +21,32 @@ private:
 
     float             fps;
     bool              paused;
-    int               score;
 
     std::unique_ptr <HUD> hud;
 
-    std::unique_ptr <GameObject> background;
-    std::unique_ptr <GameObject> tree;
-    std::unique_ptr <GameObject> bee;
+    std::unique_ptr <WorldObject> background;
+    std::unique_ptr <WorldObject> tree;
+    std::unique_ptr <WorldObject> bee;
 
-    std::array <std::unique_ptr <GameObject>, 3> clouds;
+    std::array <std::unique_ptr <WorldObject>, 3> clouds;
 
-    auto initObject(GameObject::Type type,
-                    const std::string &texture_file,
-                    float sprite_x = 0,
-                    float sprite_y = 0,
-                    float speed    = 0 ) {
-         return std::make_unique <GameObject>(
+    auto __initWorldObject(WorldObject::Type type,
+                           const std::string &texture_file,
+                           float sprite_x = 0,
+                           float sprite_y = 0,
+                           float speed    = 0 ) {
+         return std::make_unique<WorldObject>(
              type, texture_file, sprite_x, sprite_y, speed);
     }
 
     void handleInput();
     void update();
     void draw();
+
+    // ------------- TO REFACTOR ------------- 
+    std::array <std::unique_ptr <TreeBranch>, 6> tree_branches;
+
+    auto __initTreeBranch(const std::string &texture_file) {
+         return std::make_unique<TreeBranch>(texture_file);
+    }
 };

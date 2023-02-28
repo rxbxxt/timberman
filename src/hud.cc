@@ -5,6 +5,8 @@ HUD::HUD(sf::Vector2f &resolution, bool *paused) {
     this->resolution.y = resolution.y;
     this->paused = paused;
 
+    score = 0;
+
     font.loadFromFile("fonts/KOMIKAP_.ttf");
 
     __initPauseMessage("Press ENTER to start!");
@@ -12,8 +14,8 @@ HUD::HUD(sf::Vector2f &resolution, bool *paused) {
     __initTimeBar();
 }
 
-void HUD::update(float fps, int &score) {
-    __updateScore(score);
+void HUD::update(float fps) {
+    __updateScore();
     __updateTimeBar(fps);
 
     if (time_remaining < 6.0f) {
@@ -22,7 +24,7 @@ void HUD::update(float fps, int &score) {
 
     if (time_remaining <= 0.0f) {
         *paused = true;
-
+        score = 0;
         __initPauseMessage("Out of Time!!!");
         timeReset();
     }
@@ -76,7 +78,7 @@ void HUD::__updateTimeBar(float fps) {
                                  timebar_height));
 }
 
-void HUD::__updateScore(int &score) {
+void HUD::__updateScore() {
     std::stringstream ss;
     ss << "Score = " << score++;
     text_score.setString(ss.str());

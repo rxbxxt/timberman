@@ -2,18 +2,20 @@
 
 #include <SFML/Graphics.hpp>
 #include <string>
-#include <random>
 
-class GameObject {
+#include "random.h"
+
+class WorldObject {
 public:
     enum Type {
         BACKGROUND,
         TREE,
+        TREE_BRANCH,
         BEE,
         CLOUD
     };
 
-    GameObject(GameObject::Type type,
+    WorldObject(WorldObject::Type type,
                const std::string& texture_file,
                float sprite_x = 0,
                float sprite_y = 0,
@@ -31,14 +33,14 @@ private:
     float        speed;
     bool         is_active;
 
-    GameObject::Type type;
+    WorldObject::Type type;
 
     enum Direction {
         RIGHT,
         LEFT
     };
 
-    void __update(GameObject::Direction direction,
+    void __update(WorldObject::Direction direction,
                   float fps, int window_width);
 
     void __initUpdateVariables();
@@ -52,11 +54,9 @@ private:
     int __speed_rand_top;
     int __speed_rand_bot;
 
-    void __moveUntilX(GameObject::Direction direction,
+    void __moveUntilX(WorldObject::Direction direction,
                       float fps, int window_width);
 
     int __calculateSpeed(int rand_top, int rand_bot) noexcept;
     int __calculateY(int rand_top, int rand_bot) noexcept;
-
-    int ___randomNumber(int min, int max);
 };

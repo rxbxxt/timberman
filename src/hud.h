@@ -7,7 +7,7 @@ class HUD {
 public:
     HUD(sf::Vector2f &resolution, bool *paused);
 
-    void update(float fps, int &score);
+    void update(float fps);
 
     void draw(sf::RenderWindow &window, bool paused);
 
@@ -28,11 +28,12 @@ private:
     sf::Font           font;
 
     bool              *paused;
+    float              score;
 
     void __initPauseMessage(const std::string &message);
     void __initScore();
     void __initTimeBar();
 
     void __updateTimeBar(float fps);
-    void __updateScore(int &score);
+    void __updateScore();
 };
