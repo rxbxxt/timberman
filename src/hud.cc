@@ -15,6 +15,17 @@ HUD::HUD(sf::Vector2f &resolution, bool *paused) {
 void HUD::update(float fps, int &score) {
     __updateScore(score);
     __updateTimeBar(fps);
+
+    if (time_remaining < 6.0f) {
+        __initPauseMessage("Press ENTER to continue!");
+    }
+
+    if (time_remaining <= 0.0f) {
+        *paused = true;
+
+        __initPauseMessage("Out of Time!!!");
+        timeReset();
+    }
 }
 
 void HUD::draw(sf::RenderWindow &window, bool paused) {
@@ -63,13 +74,6 @@ void HUD::__updateTimeBar(float fps) {
     time_remaining -= fps;
     timebar.setSize(sf::Vector2f(timebar_width_per_second * time_remaining,
                                  timebar_height));
-
-    if (time_remaining <= 0.0f) {
-        *paused = true;
-
-        __initPauseMessage("Out of Time!!!");
-        // TODO: new game, new message
-    }
 }
 
 void HUD::__updateScore(int &score) {

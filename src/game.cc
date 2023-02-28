@@ -43,8 +43,6 @@ void Game::handleInput() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
         paused = !paused;
         score = 0;
-        // TODO: don't update time and score after a pause
-        hud->timeReset();
     }
 }
 

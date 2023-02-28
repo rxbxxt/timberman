@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include <array>
 
 #include "game_object.h"
 #include "hud.h"
@@ -27,8 +28,7 @@ private:
     std::unique_ptr <GameObject> tree;
     std::unique_ptr <GameObject> bee;
 
-    std::vector <std::unique_ptr <GameObject>> clouds
-        = std::vector <std::unique_ptr <GameObject>>(3);
+    std::array <std::unique_ptr <GameObject>, 3> clouds;
 
     auto initObject(GameObject::Type type,
                     const std::string &texture_file,
