@@ -1,10 +1,10 @@
 #include "world_object.h"
 
 WorldObject::WorldObject(WorldObject::Type type,
-                       const std::string &texture_file, 
-                       float sprite_x, 
-                       float sprite_y,
-                       float speed) {
+                         const std::string &texture_file,
+                         float sprite_x,
+                         float sprite_y,
+                         float speed) {
     this->type = type;
     __initUpdateVariables();
 

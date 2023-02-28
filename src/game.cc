@@ -9,29 +9,12 @@ Game::Game() {
         "Timberman",
         sf::Style::Fullscreen);
 
+    accept_input = false;
     paused = true;
     fps    = 0;
+    score  = 0;
 
-    hud = std::make_unique<HUD>(resolution, &paused);
-
-    background = __initWorldObject(
-        WorldObject::Type::BACKGROUND, "graphics/background.png");
-
-    tree = __initWorldObject(
-        WorldObject::Type::TREE, "graphics/tree.png", 810, 0);
-
-    bee = __initWorldObject(
-        WorldObject::Type::BEE, "graphics/bee.png");
-
-    for (auto &cloud : clouds) {
-        cloud = __initWorldObject(
-            WorldObject::Type::CLOUD, "graphics/cloud.png");
-    }
-
-    // ------------- TO REFACTOR ------------- 
-    for (auto &branch : tree_branches) {
-        branch = __initTreeBranch("graphics/branch.png");
-    }
+    __initAllObjects();
 }
 
 void Game::run() {
@@ -46,12 +29,30 @@ void Game::run() {
 }
 
 void Game::handleInput() {
+    // TODO: doesn't work properly
+    sf::Event event;
+    while (window.pollEvent(event)) {
+        if (event.type == sf::Event::KeyReleased && !paused) {
+            accept_input = true;
+        }
+    }
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
         window.close();
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
         paused = !paused;
+        accept_input = true;
+    }
+
+    if (accept_input) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+            timber->setPosition(Timber::Position::RIGHT);
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+            timber->setPosition(Timber::Position::LEFT);
+        }
     }
 }
 
@@ -62,10 +63,17 @@ void Game::update() {
     for (auto &cloud : clouds) {
         cloud->update(fps, resolution.x);
     }
-    for (int i = 0; i < tree_branches.size(); ++i) {
-        tree_branches[i]->update(i);
+       // TODO: doesn't work properly
+    if (accept_input) {
+        for (int i = tree_branches.size() - 1; i > 0; --i) {
+            tree_branches[i]->setPosition(tree_branches[i-1]->getPosition());
+        }
+        tree_branches[0]->update();
+        timber->update(&score);
+        accept_input = false;
     }
-    hud->update(fps);
+
+    hud->update(fps, &score);
 }
 
 void Game::draw() {
@@ -79,9 +87,37 @@ void Game::draw() {
     for (auto &branch: tree_branches) {
         branch->draw(window);
     }
+    timber->draw(window);
     bee->draw(window);
-
-    hud->draw(window, paused);
+    hud->draw(window);
 
     window.display();
+}
+
+void Game::__initAllObjects() {
+    timber = std::make_unique<Timber>("graphics/player.png",
+                                      "graphics/rip.png",
+                                      "graphics/axe.png");
+
+    hud = std::make_unique<HUD>(resolution, &paused);
+
+    background = __initWorldObject(
+        WorldObject::Type::BACKGROUND, "graphics/background.png");
+
+    tree = __initWorldObject(
+        WorldObject::Type::TREE, "graphics/tree.png", 810, 0);
+
+    bee = __initWorldObject(
+        WorldObject::Type::BEE, "graphics/bee.png", -3000, 0);
+
+    for (auto &cloud : clouds) {
+        cloud = __initWorldObject(
+            WorldObject::Type::CLOUD, "graphics/cloud.png", -3000, 0);
+    }
+
+    int i = 0;
+    for (auto &branch : tree_branches) {
+        branch = __initTreeBranch("graphics/branch.png", i);
+        ++i;
+    }
 }

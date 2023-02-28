@@ -16,10 +16,10 @@ public:
     };
 
     WorldObject(WorldObject::Type type,
-               const std::string& texture_file,
-               float sprite_x = 0,
-               float sprite_y = 0,
-               float speed = 0);
+                const std::string& texture_file,
+                float sprite_x = 0,
+                float sprite_y = 0,
+                float speed = 0);
 
     void update(float fps, int window_width);
     void draw(sf::RenderWindow &window);

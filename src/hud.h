@@ -7,11 +7,9 @@ class HUD {
 public:
     HUD(sf::Vector2f &resolution, bool *paused);
 
-    void update(float fps);
+    void update(float fps, float *score);
 
-    void draw(sf::RenderWindow &window, bool paused);
-
-    void timeReset() { time_remaining = 6.0f; }
+    void draw(sf::RenderWindow &window);
 
 private:
     sf::RectangleShape timebar;
@@ -28,12 +26,13 @@ private:
     sf::Font           font;
 
     bool              *paused;
-    float              score;
 
     void __initPauseMessage(const std::string &message);
     void __initScore();
     void __initTimeBar();
 
     void __updateTimeBar(float fps);
-    void __updateScore();
+    void __updateScore(float *score);
+
+    void __timeReset() { time_remaining = 6.0f; }
 };
