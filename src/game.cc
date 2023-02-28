@@ -10,7 +10,10 @@ Game::Game() {
         sf::Style::Fullscreen);
 
     paused = true;
-    fps = 0;
+    fps    = 0;
+    score  = 0;
+
+    hud = std::make_unique <HUD>(resolution, &paused);
 
     background = initObject(GameObject::Type::BACKGROUND, "graphics/background.png");
     tree       = initObject(GameObject::Type::TREE, "graphics/tree.png", 810, 0);
@@ -36,24 +39,36 @@ void Game::handleInput() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
         window.close();
     }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
+        paused = !paused;
+        score = 0;
+        // TODO: don't update time and score after a pause
+        hud->timeReset();
+    }
 }
 
 void Game::update() {
+    if (paused) return;
+
     bee->update(fps, resolution.x);
     for (auto &cloud : clouds) {
         cloud->update(fps, resolution.x);
     }
+    hud->update(fps, score);
 }
 
 void Game::draw() {
     window.clear();
 
-    window.draw(background->getSprite());
+    background->draw(window);
     for (auto &cloud : clouds) {
-        window.draw(cloud->getSprite());
+        cloud->draw(window);
     }
-    window.draw(tree->getSprite());
-    window.draw(bee->getSprite());
+    tree->draw(window);
+    bee->draw(window);
+
+    hud->draw(window, paused);
 
     window.display();
 }

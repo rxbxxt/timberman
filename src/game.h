@@ -1,8 +1,10 @@
 #pragma once
 
-#include <memory>
 #include <SFML/Graphics.hpp>
+#include <memory>
+
 #include "game_object.h"
+#include "hud.h"
 
 class Game {
 public:
@@ -14,8 +16,12 @@ private:
     sf::Time          delta_time;
     sf::RenderWindow  window;
     sf::Vector2f      resolution;
+
     float             fps;
     bool              paused;
+    int               score;
+
+    std::unique_ptr <HUD> hud;
 
     std::unique_ptr <GameObject> background;
     std::unique_ptr <GameObject> tree;

@@ -20,8 +20,7 @@ public:
                float speed = 0);
 
     void update(float fps, int window_width);
-
-    const sf::Sprite& getSprite() const { return sprite; }
+    void draw(sf::RenderWindow &window);
 
 private:
     sf::Texture  texture;

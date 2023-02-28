@@ -20,6 +20,10 @@ GameObject::GameObject(GameObject::Type type,
     sprite.setPosition(x, y);
 }
 
+void GameObject::draw(sf::RenderWindow &window) {
+    window.draw(sprite);
+}
+
 void GameObject::update(float fps, int window_width) {
     if (type == GameObject::Type::BEE) {
         __update(GameObject::Direction::LEFT, fps, window_width);
