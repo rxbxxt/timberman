@@ -1,27 +1,29 @@
 #include "tree_branch.h"
 
-TreeBranch::TreeBranch(const std::string &texture_file, int multiplier) {
+TreeBranch::TreeBranch(const std::string &texture_file, int branch_index) {
     texture.loadFromFile(texture_file);
     sprite.setTexture(texture);
     sprite.setPosition(-2000, -2000);
     sprite.setOrigin(220, 20);
 
-    this->multiplier = multiplier;
-    update();
+    this->branch_index = branch_index;
+    __setRandomPosition();
 }
 
 void TreeBranch::update() {
-   __setRandomPosition(); 
-   __setSpritePosition();
+    __setSpritePosition();
 }
 
 void TreeBranch::draw(sf::RenderWindow &window) {
     window.draw(sprite);
 }
 
-void TreeBranch::setPosition(TreeBranch::Position position) {
-    this->position = position;
-    __setSpritePosition();
+void TreeBranch::setIndex(int branch_index) {
+    this->branch_index = branch_index;
+
+    if (branch_index == 0) {
+        __setRandomPosition();
+    }
 }
 
 void TreeBranch::__setRandomPosition() {
@@ -36,7 +38,7 @@ void TreeBranch::__setRandomPosition() {
 }
 
 void TreeBranch::__setSpritePosition() {
-    float height = multiplier * 150;
+    float height = branch_index * 150;
 
     if (position == TreeBranch::Position::LEFT) {
         sprite.setPosition(610, height);

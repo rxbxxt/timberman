@@ -29,8 +29,6 @@ void Game::run() {
 }
 
 void Game::handleInput() {
-    // TODO: doesn't work properly
-    sf::Event event;
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::KeyReleased && !paused) {
             accept_input = true;
@@ -40,19 +38,18 @@ void Game::handleInput() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
         window.close();
     }
-
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
         paused = !paused;
-        accept_input = true;
     }
+    if (!accept_input) return;
 
-    if (accept_input) {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            timber->setPosition(Timber::Position::RIGHT);
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            timber->setPosition(Timber::Position::LEFT);
-        }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+        timber->setPosition(Timber::Position::RIGHT);
+        __updateBranches();
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+        timber->setPosition(Timber::Position::LEFT);
+        __updateBranches();
     }
 }
 
@@ -63,16 +60,10 @@ void Game::update() {
     for (auto &cloud : clouds) {
         cloud->update(fps, resolution.x);
     }
-       // TODO: doesn't work properly
-    if (accept_input) {
-        for (int i = tree_branches.size() - 1; i > 0; --i) {
-            tree_branches[i]->setPosition(tree_branches[i-1]->getPosition());
-        }
-        tree_branches[0]->update();
-        timber->update(&score);
-        accept_input = false;
+    for (auto &branch : tree_branches) {
+        branch->update();
     }
-
+    timber->update(&score);
     hud->update(fps, &score);
 }
 
@@ -84,10 +75,12 @@ void Game::draw() {
         cloud->draw(window);
     }
     tree->draw(window);
+
     for (auto &branch: tree_branches) {
         branch->draw(window);
     }
     timber->draw(window);
+
     bee->draw(window);
     hud->draw(window);
 
@@ -115,9 +108,19 @@ void Game::__initAllObjects() {
             WorldObject::Type::CLOUD, "graphics/cloud.png", -3000, 0);
     }
 
-    int i = 0;
-    for (auto &branch : tree_branches) {
-        branch = __initTreeBranch("graphics/branch.png", i);
-        ++i;
+    //int i = 0;
+    //for (auto &branch : tree_branches) {
+    for (int i = 0; i < 6; ++i) {
+        tree_branches.push_back(__initTreeBranch("graphics/branch.png", i));
     }
+}
+
+void Game::__updateBranches() {
+    for (auto &branch : tree_branches) {
+        branch->setIndex(branch->getIndex() + 1);
+        if (branch->getIndex() == tree_branches.size()) {
+            branch->setIndex(0);
+        }
+    }
+    accept_input = false;
 }

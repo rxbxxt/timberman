@@ -30,7 +30,7 @@ void HUD::update(float fps, float *score) {
 
 void HUD::draw(sf::RenderWindow &window) {
     window.draw(text_score);
-    if (paused) {
+    if (*paused) {
         window.draw(text_pause);
     }
     window.draw(timebar);

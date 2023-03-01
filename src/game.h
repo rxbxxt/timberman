@@ -2,7 +2,9 @@
 
 #include <SFML/Graphics.hpp>
 #include <memory>
+
 #include <array>
+#include <list>
 
 #include "world_object.h"
 #include "tree_branch.h"
@@ -19,6 +21,7 @@ private:
     sf::Time          delta_time;
     sf::RenderWindow  window;
     sf::Vector2f      resolution;
+    sf::Event         event;
 
     float             score;
     float             fps;
@@ -38,7 +41,8 @@ private:
     std::unique_ptr <WorldObject> bee;
 
     std::array <std::unique_ptr <WorldObject>, 3> clouds;
-    std::array <std::unique_ptr <TreeBranch>,  6> tree_branches;
+    //std::array <std::unique_ptr <TreeBranch>,  6> tree_branches;
+    std::list <std::shared_ptr <TreeBranch>> tree_branches;
 
     auto __initWorldObject(WorldObject::Type type,
                            const std::string &texture_file,
@@ -50,8 +54,9 @@ private:
     }
 
     auto __initTreeBranch(const std::string &texture_file, int multiplier) {
-         return std::make_unique<TreeBranch>(texture_file, multiplier);
+         return std::make_shared<TreeBranch>(texture_file, multiplier);
     }
-
+    
+    void __updateBranches();
     void __initAllObjects();
 };
