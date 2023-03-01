@@ -11,6 +11,7 @@ Game::Game() {
 
     accept_input = false;
     paused = true;
+    lost   = false;
     fps    = 0;
     score  = 0;
 
@@ -38,33 +39,49 @@ void Game::handleInput() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
         window.close();
     }
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
         paused = !paused;
     }
+
     if (!accept_input) return;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
         timber->setPosition(Timber::Position::RIGHT);
-        __updateBranches();
+        __handleChop();
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
         timber->setPosition(Timber::Position::LEFT);
-        __updateBranches();
+        __handleChop();
     }
 }
 
 void Game::update() {
+    bool alive = true;
+
     if (paused) return;
 
     bee->update(fps, resolution.x);
     for (auto &cloud : clouds) {
         cloud->update(fps, resolution.x);
     }
-    for (auto &branch : tree_branches) {
-        branch->update();
+
+    if (lost) {
+        __newRound(); 
     }
-    timber->update(&score);
-    hud->update(fps, &score);
+    else {
+        for (auto &branch : tree_branches) {
+            branch->update();
+        }
+    }
+
+    if (timber->getPosition() == __lastBranchPosition()) {
+        alive = false;
+        timber->rip();
+    }
+    timber->update();
+
+    hud->update(fps, score, alive);
 }
 
 void Game::draw() {
@@ -92,7 +109,7 @@ void Game::__initAllObjects() {
                                       "graphics/rip.png",
                                       "graphics/axe.png");
 
-    hud = std::make_unique<HUD>(resolution, &paused);
+    hud = std::make_unique<HUD>(resolution, &paused, &lost);
 
     background = __initWorldObject(
         WorldObject::Type::BACKGROUND, "graphics/background.png");
@@ -108,14 +125,19 @@ void Game::__initAllObjects() {
             WorldObject::Type::CLOUD, "graphics/cloud.png", -3000, 0);
     }
 
-    //int i = 0;
-    //for (auto &branch : tree_branches) {
-    for (int i = 0; i < 6; ++i) {
-        tree_branches.push_back(__initTreeBranch("graphics/branch.png", i));
+    int i = 0;
+    for (auto &branch : tree_branches) {
+        branch = __initTreeBranch("graphics/branch.png", i);
+        ++i;
     }
 }
 
-void Game::__updateBranches() {
+void Game::__handleChop() {
+    ++score;
+    tmb::Sound::playChop();
+
+    hud->addTime(score);
+
     for (auto &branch : tree_branches) {
         branch->setIndex(branch->getIndex() + 1);
         if (branch->getIndex() == tree_branches.size()) {
@@ -123,4 +145,31 @@ void Game::__updateBranches() {
         }
     }
     accept_input = false;
+}
+
+const TreeBranch &Game::__lastBranch() const {
+    for (auto &branch : tree_branches) {
+        if (branch->getIndex() == tree_branches.size() - 1) {
+            return *branch;
+        }
+    }
+}
+
+TreeBranch::Position Game::__lastBranchPosition() {
+    return __lastBranch().getPosition();
+}
+
+void Game::__newRound() {
+    lost = false;
+    score = 0;
+
+    for (const auto &branch : tree_branches) {
+        if (branch->getIndex() != tree_branches.size() - 1) {
+            branch->update();
+        }
+        else {
+            branch->none();
+        }
+    }
+    timber->revival();
 }

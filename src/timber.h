@@ -13,15 +13,18 @@ public:
            const std::string &timber_rip_texture_file,
            const std::string &timber_axe_texture_file);
 
-    void update(float *score);
+    void rip();
+    void revival();
+
+    void update();
     void draw(sf::RenderWindow &window);
 
-    void setPosition(Timber::Position position) {
-        this->position = position;
-    }
+    void setPosition(Timber::Position position) { this->position = position; }
+    auto getPosition() const { return position; }
+
 
 private:
-
+    bool alive;
     Timber::Position position;
 
     sf::Texture  timber_texture;

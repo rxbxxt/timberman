@@ -14,6 +14,10 @@ void TreeBranch::update() {
     __setSpritePosition();
 }
 
+void TreeBranch::none() {
+    position = TreeBranch::Position::NONE;
+}
+
 void TreeBranch::draw(sf::RenderWindow &window) {
     window.draw(sprite);
 }
@@ -38,7 +42,7 @@ void TreeBranch::__setRandomPosition() {
 }
 
 void TreeBranch::__setSpritePosition() {
-    float height = branch_index * 150;
+    float height = branch_index * 170;
 
     if (position == TreeBranch::Position::LEFT) {
         sprite.setPosition(610, height);

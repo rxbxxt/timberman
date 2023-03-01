@@ -17,6 +17,8 @@ public:
     void draw(sf::RenderWindow &window);
 
     void setIndex(int branch_index);
+
+    void none();
     
     auto getIndex() const { return branch_index; }
     auto getPosition() const { return position; }
